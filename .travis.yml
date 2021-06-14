@@ -1,0 +1,29 @@
+# Travis CI Java documentation can be found in:
+# https://docs.travis-ci.com/user/languages/java/
+
+# This enables the 'defaults' to test java applications:
+language: java
+
+# We can specify a list of JDKs to be used for testing
+# A list of available JDKs in Trusty can be seed in:
+# https://docs.travis-ci.com/user/reference/xenial/#jvm-clojure-groovy-java-scala-support
+jdk: openjdk15
+
+# Each job in Travis CI has several steps:
+# https://docs.travis-ci.com/user/job-lifecycle/
+# The 'language: java' directive sets up sane defaults to test common java applications
+# We use the defaults for installing dependencies, compiling and testing maven applications
+# In our case it will be 'mvn install' followed by 'mvn test'
+
+# Change jobs to run Jacoco code coverage:
+# Jacoco needs  mvn clean verify to run
+jobs:
+  include:
+    - script: mvn clean verify package
+
+# This is to enable CodeCov's coverage
+# If a build is successful, the code is submitted for coverage analysis
+# On every build, Travis CI calls the online Codecov shell script,
+# which will somehow update the code coverage value based on the JaCoCo report generated during the previous build command.
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
